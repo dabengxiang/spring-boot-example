@@ -1,8 +1,9 @@
 package com.example.springboot.web.entity;
 
 import com.example.springboot.web.validator.MyConstraint;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
@@ -13,57 +14,43 @@ import java.util.Date;
  * Author:gyc
  * Desc:
  */
+@Data
 public class User {
+
 
     public interface UserSimpleView {};
     public interface UserDetailView extends UserSimpleView {};
 
+    @JsonView({UserSimpleView.class})
     private String id;
 
     @MyConstraint(message = "这是一个测试")
     @ApiModelProperty(value = "用户名")
+    @JsonView({UserSimpleView.class})
     private String username;
 
     @NotBlank(message = "密码不能为空")
+    @JsonView({UserDetailView.class})
     private String password;
+    
 
     @Past(message = "生日必须是过去的时间")
+    @JsonView({UserSimpleView.class})
     private Date birthday;
 
+    
     @JsonView(UserSimpleView.class)
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @JsonView(UserDetailView.class)
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @JsonProperty("testcol_1")
+    private String testCol1 = "1";
 
     @JsonView(UserSimpleView.class)
-    public String getId() {
-        return id;
-    }
+    @JsonIgnore
+    private String testCol2 = "2";
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     @JsonView(UserSimpleView.class)
-    public Date getBirthday() {
-        return birthday;
-    }
+    @JsonInclude
+    private String testCol3;
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
 
 }
